@@ -71,7 +71,7 @@
       <div class="flex flex-col sm:flex-row gap-3 items-center justify-between">
         <div class="relative w-full sm:w-96">
           <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-500 text-xs"></i>
-          <input id="search-input" oninput="renderTable()" type="text" placeholder="Search my logbook by tail, airline, model, airport..." 
+          <input id="search-input" oninput="renderTable()" type="text" placeholder="Search my logbook by tail, airline, camera, airport..." 
                  class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-4 py-2 text-xs text-slate-200 focus:outline-none focus:border-sky-500 placeholder:text-slate-500">
         </div>
         <div class="flex gap-2 w-full sm:w-auto justify-end">
@@ -91,6 +91,8 @@
               <th class="py-3 px-4">Airline</th>
               <th class="py-3 px-4">Airport</th>
               <th class="py-3 px-4">Date</th>
+              <th class="py-3 px-4">Camera</th>
+              <th class="py-3 px-4">Media</th>
               <th class="py-3 px-4">Notes</th>
               <th class="py-3 px-4 text-right">Action</th>
             </tr>
@@ -116,7 +118,7 @@
         </div>
         <div class="relative w-full sm:w-80">
           <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-500 text-xs"></i>
-          <input id="community-search" oninput="renderCommunityFeed()" type="text" placeholder="Filter by spotter, airline, or tail..." 
+          <input id="community-search" oninput="renderCommunityFeed()" type="text" placeholder="Filter by spotter, airline, camera, or tail..." 
                  class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-4 py-2 text-xs text-slate-200 focus:outline-none focus:border-sky-500 placeholder:text-slate-500">
         </div>
       </div>
@@ -133,7 +135,7 @@
 
   <!-- Log Entry Modal -->
   <div id="log-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b border-slate-800 pb-3">
         <h3 class="text-base font-bold text-white flex items-center">
           <i class="fa-solid fa-pen-to-square text-sky-400 mr-2"></i> Record Aircraft Sighting
@@ -178,9 +180,25 @@
           </div>
         </div>
 
+        <!-- Optional Camera & Video Inputs -->
+        <div class="grid grid-cols-2 gap-3 pt-1">
+          <div>
+            <label class="block text-[11px] font-semibold uppercase text-slate-400 mb-1">
+              <i class="fa-solid fa-camera mr-1 text-slate-500"></i> Camera / Lens (Optional)
+            </label>
+            <input id="form-camera" type="text" placeholder="e.g. Canon EOS R6, iPhone 15" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-sky-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold uppercase text-slate-400 mb-1">
+              <i class="fa-solid fa-video mr-1 text-slate-500"></i> Video Link (Optional)
+            </label>
+            <input id="form-video" type="url" placeholder="https://youtube.com/watch?v=..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-sky-500 outline-none">
+          </div>
+        </div>
+
         <div>
           <label class="block text-[11px] font-semibold uppercase text-slate-400 mb-1">Special Notes</label>
-          <input id="form-notes" type="text" placeholder="e.g. Oneworld livery, delivery flight" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-sky-500 outline-none">
+          <input id="form-notes" type="text" placeholder="e.g. Oneworld livery, runway 27R arrival" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-sky-500 outline-none">
         </div>
 
         <button type="submit" class="w-full mt-4 bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold py-2.5 rounded-xl transition text-xs shadow-lg shadow-sky-500/20">
@@ -418,6 +436,7 @@
         e.type.toLowerCase().includes(search) ||
         e.airline.toLowerCase().includes(search) ||
         e.airport.toLowerCase().includes(search) ||
+        (e.camera && e.camera.toLowerCase().includes(search)) ||
         (e.notes && e.notes.toLowerCase().includes(search))
       );
 
@@ -440,6 +459,10 @@
           <td class="py-3 px-4 text-slate-300">${e.airline}</td>
           <td class="py-3 px-4 uppercase text-slate-400 font-mono">${e.airport}</td>
           <td class="py-3 px-4 text-slate-400">${e.date}</td>
+          <td class="py-3 px-4 text-slate-400 truncate max-w-[120px]">${e.camera || '—'}</td>
+          <td class="py-3 px-4">
+            ${e.video ? `<a href="${e.video}" target="_blank" class="text-sky-400 hover:text-sky-300 font-semibold inline-flex items-center"><i class="fa-solid fa-play text-[10px] mr-1"></i> Watch</a>` : '<span class="text-slate-600">—</span>'}
+          </td>
           <td class="py-3 px-4 text-slate-500 italic truncate max-w-xs">${e.notes || '—'}</td>
           <td class="py-3 px-4 text-right">
             <button onclick="deleteEntry('${e.id}')" class="text-slate-600 hover:text-rose-400 transition text-xs">
@@ -462,6 +485,7 @@
         e.type.toLowerCase().includes(search) ||
         e.airline.toLowerCase().includes(search) ||
         e.airport.toLowerCase().includes(search) ||
+        (e.camera && e.camera.toLowerCase().includes(search)) ||
         e.spotterName.toLowerCase().includes(search)
       );
 
@@ -481,6 +505,16 @@
             </div>
             <h4 class="text-sm font-bold text-white">${e.type}</h4>
             <p class="text-xs text-slate-300">${e.airline}</p>
+            
+            ${e.camera ? `<div class="text-[11px] text-slate-400"><i class="fa-solid fa-camera mr-1 text-slate-500"></i>${e.camera}</div>` : ''}
+
+            ${e.video ? `
+              <div class="pt-1">
+                <a href="${e.video}" target="_blank" class="inline-flex items-center text-xs text-sky-400 hover:text-sky-300 font-semibold bg-sky-500/10 hover:bg-sky-500/20 px-2.5 py-1 rounded-lg border border-sky-500/20 transition">
+                  <i class="fa-solid fa-circle-play mr-1.5 text-rose-500"></i> Watch Video Link
+                </a>
+              </div>` : ''}
+
             ${e.notes ? `<p class="text-xs text-slate-400 italic bg-slate-900 p-2 rounded-lg border border-slate-800">${e.notes}</p>` : ''}
           </div>
           <div class="pt-3 mt-3 border-t border-slate-800/60 flex justify-between items-center text-[11px] text-slate-500">
@@ -537,6 +571,8 @@
         airline: document.getElementById('form-airline').value.trim(),
         airport: document.getElementById('form-airport').value.trim().toUpperCase(),
         date: document.getElementById('form-date').value,
+        camera: document.getElementById('form-camera').value.trim(),
+        video: document.getElementById('form-video').value.trim(),
         visibility: document.getElementById('form-privacy').value,
         notes: document.getElementById('form-notes').value.trim()
       };
@@ -558,9 +594,9 @@
         alert('No entries to export yet!');
         return;
       }
-      let csv = 'Visibility,Registration,Aircraft Type,Airline,Airport,Date,Notes\n';
+      let csv = 'Visibility,Registration,Aircraft Type,Airline,Airport,Date,Camera,Video URL,Notes\n';
       myLogs.forEach(e => {
-        csv += `"${e.visibility}","${e.reg}","${e.type}","${e.airline}","${e.airport}","${e.date}","${(e.notes || '').replace(/"/g, '""')}"\n`;
+        csv += `"${e.visibility}","${e.reg}","${e.type}","${e.airline}","${e.airport}","${e.date}","${(e.camera || '').replace(/"/g, '""')}","${(e.video || '').replace(/"/g, '""')}","${(e.notes || '').replace(/"/g, '""')}"\n`;
       });
 
       const blob = new Blob([csv], { type: 'text/csv' });
@@ -579,4 +615,3 @@
   </script>
 </body>
 </html>
-
