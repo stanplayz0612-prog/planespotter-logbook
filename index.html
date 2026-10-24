@@ -36,8 +36,7 @@
       background: #334155;
       border-radius: 3px;
     }
-    .pro-badge {
-      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    .owner-glow {
       box-shadow: 0 0 15px rgba(245, 158, 11, 0.35);
     }
   </style>
@@ -90,7 +89,7 @@
         </button>
 
         <div id="auth-actions" class="flex items-center">
-          <!-- Rendered dynamically by checkAuth() -->
+          <!-- Rendered dynamically by updateAuthUI() -->
         </div>
       </div>
     </div>
@@ -290,7 +289,7 @@
     </div>
   </div>
 
-  <!-- AUTH MODAL (WITH MANDATORY EMAIL AND CALLSIGN) -->
+  <!-- AUTH MODAL (WITH EMAIL, CALLSIGN, AND OWNER PASSCODE ACCESS) -->
   <div id="auth-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl relative">
       <div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
@@ -306,17 +305,17 @@
       <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="space-y-3.5">
         <div>
           <label class="block text-xs font-mono text-slate-400 mb-1">Spotter Callsign / Username *</label>
-          <input type="text" id="auth-username" required placeholder="e.g. SpeedbirdSpotter" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-amber-500">
+          <input type="text" id="auth-username" required placeholder="e.g. stanlikesplanes" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-amber-500">
         </div>
 
         <div>
           <label class="block text-xs font-mono text-slate-400 mb-1">Email Address *</label>
-          <input type="email" id="auth-email" required placeholder="e.g. spotter@jetspotlog.com" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-amber-500">
+          <input type="email" id="auth-email" required placeholder="e.g. stan@jetspotlog.com" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-amber-500">
         </div>
 
         <div>
-          <label class="block text-xs font-mono text-slate-400 mb-1">Password</label>
-          <input type="password" id="auth-password" placeholder="••••••••" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-amber-500">
+          <label class="block text-xs font-mono text-slate-400 mb-1">Passcode / Password</label>
+          <input type="password" id="auth-password" placeholder="Enter owner9988 for Owner status" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-amber-500">
         </div>
 
         <div class="pt-2">
@@ -331,10 +330,12 @@
     // 1. SUPABASE CLIENT INITIALIZATION
     const SUPABASE_URL = "https://swisvwetuljwdoggckfp.supabase.co";
     const SUPABASE_KEY = "sb_publishable_uq2gJmm5YWIuGw-dWUGyQA_f7dQcd8-";
-
     const dbClient = (window.supabase && window.supabase.createClient) ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
-    // 2. STATE STORAGE
+    // 2. OWNER SECURITY CONFIGURATION
+    const OWNER_PASSCODE = "owner9988"; // Enter this passcode in login to unlock Owner privileges
+
+    // 3. STATE STORAGE
     let currentUser = JSON.parse(localStorage.getItem('jetspotlog_user') || 'null');
     let localLogs = JSON.parse(localStorage.getItem('jetspotlog_logs') || '[]');
     let cloudLogs = [];
@@ -371,15 +372,29 @@
     // AUTH HANDLING
     function updateAuthUI() {
       const authContainer = document.getElementById('auth-actions');
+      const spotterTier = document.getElementById('stat-spotter-tier');
+
       if (currentUser && currentUser.email) {
+        const isOwner = currentUser.role === 'owner';
+
+        if (spotterTier) {
+          spotterTier.innerHTML = isOwner ? '👑 PLATFORM OWNER' : 'PRO FOUNDER';
+          spotterTier.className = isOwner 
+            ? 'text-xs font-bold font-mono px-2 py-1 rounded bg-amber-400 text-slate-950 border border-amber-300 owner-glow' 
+            : 'text-xs font-bold font-mono px-2 py-1 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30';
+        }
+
         authContainer.innerHTML = `
-          <div class="flex items-center space-x-2 bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5">
-            <div class="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center text-xs font-bold font-mono">
-              ${currentUser.username.charAt(0).toUpperCase()}
+          <div class="flex items-center space-x-2 bg-slate-900 border ${isOwner ? 'border-amber-400/80 owner-glow' : 'border-slate-800'} rounded-xl px-3 py-1.5">
+            <div class="w-6 h-6 rounded-full ${isOwner ? 'bg-amber-400 text-slate-950 font-black' : 'bg-amber-500/20 text-amber-400'} flex items-center justify-center text-xs font-bold font-mono">
+              ${isOwner ? '👑' : currentUser.username.charAt(0).toUpperCase()}
             </div>
             <div class="text-left hidden sm:block">
-              <div class="text-xs font-bold text-white leading-none">${currentUser.username}</div>
-              <div class="text-[10px] text-slate-400 font-mono leading-none mt-0.5">${currentUser.email}</div>
+              <div class="flex items-center space-x-1.5">
+                <span class="text-xs font-bold text-white leading-none">${currentUser.username}</span>
+                ${isOwner ? '<span class="text-[9px] font-black font-mono px-1 py-0.5 rounded bg-amber-400 text-slate-950">OWNER</span>' : ''}
+              </div>
+              <div class="text-[10px] text-slate-400 font-mono leading-none mt-1">${currentUser.email}</div>
             </div>
             <button onclick="handleSignOut()" title="Sign Out" class="text-slate-400 hover:text-red-400 ml-1">
               <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
@@ -387,6 +402,11 @@
           </div>
         `;
       } else {
+        if (spotterTier) {
+          spotterTier.innerHTML = 'GUEST SPOTTER';
+          spotterTier.className = 'text-xs font-bold font-mono px-2 py-1 rounded bg-slate-800 text-slate-400 border border-slate-700';
+        }
+
         authContainer.innerHTML = `
           <button onclick="openAuthModal()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold flex items-center space-x-1.5 border border-slate-700 transition-all">
             <i data-lucide="user" class="w-3.5 h-3.5"></i>
@@ -395,6 +415,7 @@
         `;
       }
       lucide.createIcons();
+      renderCloudRadar();
     }
 
     function openAuthModal() {
@@ -408,16 +429,21 @@
       e.preventDefault();
       const username = document.getElementById('auth-username').value.trim();
       const email = document.getElementById('auth-email').value.trim();
+      const passcode = document.getElementById('auth-password').value.trim();
 
       if (!email || !email.includes('@')) {
         alert('Please provide a valid email address to sign in.');
         return;
       }
 
+      // Check for Owner permissions
+      const isOwner = (passcode === OWNER_PASSCODE);
+
       currentUser = {
         id: 'usr_' + Math.random().toString(36).substr(2, 9),
         username: username,
         email: email,
+        role: isOwner ? 'owner' : 'user',
         isPro: true
       };
 
@@ -425,6 +451,10 @@
       closeAuthModal();
       updateAuthUI();
       renderMyLogs();
+
+      if (isOwner) {
+        alert('👑 Welcome, Owner! Post removal controls are now unlocked across the Community Radar.');
+      }
     }
 
     function handleSignOut() {
@@ -465,7 +495,7 @@
         is_pro: true
       };
 
-      // 1. Save to local state
+      // 1. Save to local storage
       localLogs.unshift(newLog);
       localStorage.setItem('jetspotlog_logs', JSON.stringify(localLogs));
 
@@ -529,7 +559,7 @@
             </span>
           </td>
           <td class="py-3 px-4 text-right">
-            <button onclick="deleteLocalLog('${log.id}')" class="text-slate-500 hover:text-red-400 transition-colors">
+            <button onclick="deleteLocalLog('${log.id}')" class="text-slate-500 hover:text-red-400 transition-colors" title="Delete from personal logbook">
               <i data-lucide="trash-2" class="w-4 h-4 inline"></i>
             </button>
           </td>
@@ -547,7 +577,7 @@
       }
     }
 
-    // CLOUD RADAR FETCH & REALTIME
+    // CLOUD RADAR FETCH & OWNER POST DELETION
     async function fetchCloudLogs() {
       if (!dbClient) return;
       try {
@@ -568,6 +598,8 @@
 
     function renderCloudRadar() {
       const container = document.getElementById('radar-cards-container');
+      const isOwner = currentUser && currentUser.role === 'owner';
+
       if (cloudLogs.length === 0) {
         container.innerHTML = `
           <div class="col-span-full py-12 text-center text-slate-500">
@@ -580,9 +612,12 @@
       }
 
       container.innerHTML = cloudLogs.map(log => `
-        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-4 hover:border-slate-700 transition-all backdrop-blur-sm">
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-4 hover:border-slate-700 transition-all backdrop-blur-sm relative group">
           <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400">@${log.spotter_name || 'Spotter'}</span>
+            <span class="text-xs font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400 flex items-center space-x-1">
+              <span>@${log.spotter_name || 'Spotter'}</span>
+              ${(currentUser && currentUser.username === log.spotter_name && isOwner) ? '<span class="text-[9px] font-black text-amber-400 bg-amber-400/10 px-1 rounded ml-1 border border-amber-400/30">OWNER</span>' : ''}
+            </span>
             <span class="text-[11px] font-mono text-slate-500">${new Date(log.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
           </div>
 
@@ -598,12 +633,51 @@
 
           <div class="mt-3 pt-3 border-t border-slate-800/60 flex items-center justify-between text-[11px] font-mono text-slate-500">
             <span>${log.camera ? `📷 ${log.camera}` : 'Logged via Web'}</span>
-            ${log.video ? `<a href="${log.video}" target="_blank" class="text-amber-400 hover:underline flex items-center space-x-1"><i data-lucide="video" class="w-3 h-3"></i><span>Video</span></a>` : ''}
+            <div class="flex items-center space-x-3">
+              ${log.video ? `<a href="${log.video}" target="_blank" class="text-amber-400 hover:underline flex items-center space-x-1"><i data-lucide="video" class="w-3 h-3"></i><span>Video</span></a>` : ''}
+              
+              <!-- OWNER REMOVAL ACTION (SHOWN ONLY TO OWNER) -->
+              ${isOwner ? `
+                <button onclick="handleOwnerDeletePost('${log.id}', '${log.reg}')" class="text-red-400 hover:text-red-300 font-sans font-semibold flex items-center space-x-1 bg-red-500/10 hover:bg-red-500/20 px-2 py-0.5 rounded border border-red-500/30 transition-all" title="Owner Power: Permanently Delete Post">
+                  <i data-lucide="trash" class="w-3 h-3"></i>
+                  <span>Remove Post</span>
+                </button>
+              ` : ''}
+            </div>
           </div>
         </div>
       `).join('');
 
       lucide.createIcons();
+    }
+
+    // PERMANENT OWNER REMOVAL FROM SUPABASE
+    async function handleOwnerDeletePost(logId, reg) {
+      if (!currentUser || currentUser.role !== 'owner') {
+        alert('Access denied: Only the Owner can delete posts.');
+        return;
+      }
+
+      if (!confirm(`👑 OWNER ACTION:\nAre you sure you want to permanently remove sighting "${reg}" from the live Community Radar?`)) {
+        return;
+      }
+
+      try {
+        if (dbClient) {
+          const { error } = await dbClient.from('spotter_logs').delete().eq('id', logId);
+          if (error) {
+            alert('Error deleting post from database: ' + error.message);
+            return;
+          }
+        }
+        
+        // Remove locally from view
+        cloudLogs = cloudLogs.filter(l => l.id !== logId);
+        renderCloudRadar();
+        alert(`Sighting "${reg}" has been permanently removed by Owner.`);
+      } catch (err) {
+        alert('Failed to remove post: ' + err.message);
+      }
     }
 
     function initRealtime() {
@@ -612,6 +686,10 @@
         .channel('public:spotter_logs')
         .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'spotter_logs' }, payload => {
           cloudLogs.unshift(payload.new);
+          renderCloudRadar();
+        })
+        .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'spotter_logs' }, payload => {
+          cloudLogs = cloudLogs.filter(l => l.id !== payload.old.id);
           renderCloudRadar();
         })
         .subscribe();
