@@ -3,21 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AeroLog - Spotter Logbook & Early Access Pro Network</title>
+  <title>AeroLog - Spotter Logbook & Community Radar</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <!-- Supabase JS Client -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     .brand-gradient { background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); }
-    .gold-shimmer {
-      background: linear-gradient(90deg, #f59e0b, #fbbf24, #f59e0b);
-      background-size: 200% auto;
-      animation: shine 3s linear infinite;
-    }
-    @keyframes shine {
-      to { background-position: 200% center; }
-    }
     .pro-glow {
       box-shadow: 0 0 15px rgba(245, 158, 11, 0.15);
       border-color: rgba(245, 158, 11, 0.4) !important;
@@ -28,7 +20,7 @@
 
   <!-- Early Access Promo Ribbon -->
   <div class="bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-600 text-slate-950 text-xs font-bold py-1.5 px-4 text-center tracking-wide flex items-center justify-center space-x-2">
-    <span><i class="fa-solid fa-crown mr-1"></i> EARLY ACCESS: PRO TIER & GLOBAL RADAR SYNC ACTIVE!</span>
+    <span><i class="fa-solid fa-crown mr-1"></i> FOUNDING PRO UNLOCKED: GLOBAL SPOTTER RADAR LIVE</span>
   </div>
 
   <!-- Header -->
@@ -41,7 +33,7 @@
         <div>
           <span class="text-xl font-bold tracking-tight text-white">AERO<span class="text-sky-400">LOG</span></span>
           <span class="hidden sm:inline-block text-[11px] uppercase tracking-widest text-amber-400 ml-2.5 border-l border-slate-800 pl-2.5 font-semibold">
-            <i class="fa-solid fa-cloud mr-1"></i> Cloud Connected
+            <i class="fa-solid fa-cloud mr-1"></i> Live Radar
           </span>
         </div>
       </div>
@@ -54,10 +46,10 @@
         <button id="nav-community" onclick="switchTab('community')" class="px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800 transition">
           <i class="fa-solid fa-globe mr-1 text-sky-400"></i> Community Feed
         </button>
-        <button id="nav-pro-analytics" onclick="switchTab('analytics')" class="px-3.5 py-2 rounded-lg text-xs font-semibold text-amber-400 hover:bg-amber-500/10 border border-amber-500/30 transition">
+        <button id="nav-analytics" onclick="switchTab('analytics')" class="px-3.5 py-2 rounded-lg text-xs font-semibold text-amber-400 hover:bg-amber-500/10 border border-amber-500/30 transition">
           <i class="fa-solid fa-chart-pie mr-1"></i> Pro Analytics
         </button>
-        <button onclick="openLogModal()" class="px-3.5 py-2 rounded-lg text-xs font-bold bg-amber-400 hover:bg-amber-300 text-slate-950 transition flex items-center shadow-lg shadow-amber-500/20">
+        <button onclick="openLogModal()" class="px-3.5 py-2 rounded-lg text-xs font-bold bg-amber-400 hover:bg-amber-300 text-slate-950 transition flex items-center shadow-lg shadow-amber-500/20 cursor-pointer">
           <i class="fa-solid fa-plus mr-1"></i> Log Aircraft
         </button>
         <button id="auth-menu-btn" onclick="openAuthModal()" class="ml-2 text-xs text-slate-200 px-3 py-2 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 font-medium transition flex items-center">
@@ -85,7 +77,7 @@
         <span id="stat-airline" class="text-base font-bold text-white mt-2 truncate block">None</span>
       </div>
       <div class="bg-slate-900 border border-amber-500/30 rounded-2xl p-4 pro-glow">
-        <span class="text-xs font-medium text-amber-400 block">Global Radar Posts</span>
+        <span class="text-xs font-medium text-amber-400 block">Global Public Sightings</span>
         <span id="stat-community" class="text-2xl font-black text-amber-300 mt-1 block">0</span>
       </div>
     </div>
@@ -95,12 +87,12 @@
       <div class="flex flex-col sm:flex-row gap-3 items-center justify-between">
         <div class="relative w-full sm:w-96">
           <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-500 text-xs"></i>
-          <input id="search-input" oninput="renderTable()" type="text" placeholder="Search tail, model, airline, camera, notes..." 
+          <input id="search-input" oninput="renderTable()" type="text" placeholder="Search tail, model, airline, airport..." 
                  class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-4 py-2 text-xs text-slate-200 focus:outline-none focus:border-amber-500 placeholder:text-slate-500">
         </div>
         <div class="flex gap-2 w-full sm:w-auto justify-end">
-          <button onclick="printSpottingDossier()" class="px-3 py-2 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 rounded-xl text-xs text-amber-300 font-semibold transition flex items-center">
-            <i class="fa-solid fa-print mr-1.5"></i> Pro Dossier
+          <button onclick="window.print()" class="px-3 py-2 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 rounded-xl text-xs text-amber-300 font-semibold transition flex items-center">
+            <i class="fa-solid fa-print mr-1.5"></i> Dossier
           </button>
           <button onclick="exportCSV()" class="px-3 py-2 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-xl text-xs text-slate-300 font-medium transition flex items-center">
             <i class="fa-solid fa-file-csv mr-1.5 text-emerald-400"></i> Export CSV
@@ -119,17 +111,17 @@
               <th class="py-3 px-4">Airport</th>
               <th class="py-3 px-4">Date</th>
               <th class="py-3 px-4">Media</th>
-              <th class="py-3 px-4">Camera / Notes</th>
+              <th class="py-3 px-4">Notes</th>
               <th class="py-3 px-4 text-right">Action</th>
             </tr>
           </thead>
           <tbody id="logbook-table-body" class="divide-y divide-slate-800/60"></tbody>
         </table>
       </div>
-      <div id="empty-state" class="hidden text-center py-16 text-slate-500 space-y-2">
+      <div id="empty-state" class="text-center py-16 text-slate-500 space-y-2">
         <i class="fa-solid fa-plane text-4xl text-slate-700"></i>
-        <p class="font-medium text-slate-400">No sightings recorded yet.</p>
-        <p class="text-[11px] text-slate-600">Click "Log Aircraft" above to begin your spotter logbook!</p>
+        <p class="font-medium text-slate-400">No personal sightings logged yet.</p>
+        <p class="text-[11px] text-slate-600">Click the golden "+ Log Aircraft" button above to add your first flight!</p>
       </div>
     </section>
 
@@ -138,36 +130,34 @@
       <div class="flex flex-col sm:flex-row gap-3 items-center justify-between">
         <div>
           <h2 class="text-base font-bold text-white flex items-center">
-            <i class="fa-solid fa-globe text-sky-400 mr-2"></i> Global Spotter Radar
-            <span class="ml-2 text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/30 font-mono">LIVE CLOUD</span>
+            <i class="fa-solid fa-globe text-sky-400 mr-2"></i> Global Community Radar
+            <span class="ml-2 text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/30 font-mono">SUPABASE CLOUD SYNC</span>
           </h2>
-          <p class="text-xs text-slate-400">Real-time public sightings synced across all spotters.</p>
+          <p class="text-xs text-slate-400">Real-time sightings logged by spotters worldwide.</p>
         </div>
         <div class="relative w-full sm:w-80">
           <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-500 text-xs"></i>
-          <input id="community-search" oninput="renderCommunityFeed()" type="text" placeholder="Filter by spotter, airline, or tail..." 
+          <input id="community-search" oninput="renderCommunityFeed()" type="text" placeholder="Filter community radar..." 
                  class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-4 py-2 text-xs text-slate-200 focus:outline-none focus:border-amber-500 placeholder:text-slate-500">
         </div>
       </div>
 
       <div id="community-feed-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-      <div id="community-empty" class="hidden text-center py-16 text-slate-500 space-y-2">
+      <div id="community-empty" class="text-center py-16 text-slate-500 space-y-2">
         <i class="fa-solid fa-tower-broadcast text-4xl text-slate-700"></i>
-        <p class="font-medium text-slate-400">No public logs found on the cloud yet.</p>
-        <p class="text-[11px] text-slate-600">Be the first to log an aircraft with visibility set to "Public"!</p>
+        <p class="font-medium text-slate-400">No public logs found in the cloud yet.</p>
+        <p class="text-[11px] text-slate-600">Click "+ Log Aircraft", choose "🌐 Public", and your sighting will appear here worldwide!</p>
       </div>
     </section>
 
-    <!-- 4. PRO ANALYTICS TAB -->
+    <!-- 4. ANALYTICS TAB -->
     <section id="tab-analytics" class="hidden space-y-6">
-      <div class="bg-gradient-to-r from-amber-500/10 via-slate-900 to-amber-500/10 border border-amber-500/30 rounded-2xl p-6 pro-glow flex items-center justify-between">
-        <div>
-          <div class="inline-flex items-center px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[10px] font-bold border border-amber-500/40 mb-2">
-            <i class="fa-solid fa-crown mr-1"></i> PRO FEATURE ACTIVE
-          </div>
-          <h2 class="text-xl font-black text-white">Spotter Intelligence & Fleet Breakdown</h2>
-          <p class="text-xs text-slate-400">Deep telemetry calculated from your cloud & local logbook.</p>
+      <div class="bg-gradient-to-r from-amber-500/10 via-slate-900 to-amber-500/10 border border-amber-500/30 rounded-2xl p-6 pro-glow">
+        <div class="inline-flex items-center px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[10px] font-bold border border-amber-500/40 mb-2">
+          <i class="fa-solid fa-crown mr-1"></i> PRO FEATURE
         </div>
+        <h2 class="text-xl font-black text-white">Fleet Telemetry & Aircraft Breakdown</h2>
+        <p class="text-xs text-slate-400">Computed live from your synced logs.</p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -177,12 +167,12 @@
         </div>
 
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
-          <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider"><i class="fa-solid fa-plane-departure text-sky-400 mr-2"></i> Top Visited Airports</h3>
+          <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider"><i class="fa-solid fa-plane-departure text-sky-400 mr-2"></i> Top Airports</h3>
           <div id="analytics-airports" class="space-y-2 text-xs text-slate-400"></div>
         </div>
 
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
-          <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider"><i class="fa-solid fa-camera text-emerald-400 mr-2"></i> Spotting Gear Index</h3>
+          <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider"><i class="fa-solid fa-camera text-emerald-400 mr-2"></i> Spotting Gear</h3>
           <div id="analytics-gear" class="space-y-2 text-xs text-slate-400"></div>
         </div>
       </div>
@@ -198,7 +188,7 @@
           <i class="fa-solid fa-pen-to-square text-amber-400 mr-2"></i> Record Aircraft Sighting
           <span class="ml-2 text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded border border-amber-500/40">PRO ENTRY</span>
         </h3>
-        <button onclick="closeLogModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+        <button onclick="closeLogModal()" class="text-slate-400 hover:text-white cursor-pointer"><i class="fa-solid fa-xmark text-lg"></i></button>
       </div>
 
       <form id="entry-form" onsubmit="handleSaveEntry(event)" class="space-y-3">
@@ -238,35 +228,35 @@
           </div>
         </div>
 
-        <!-- Pro Features: Media & Camera Gear -->
+        <!-- Media & Camera -->
         <div class="bg-slate-950/80 border border-slate-800/80 p-3 rounded-xl space-y-2.5">
           <div class="text-[10px] font-bold text-amber-400 uppercase tracking-widest flex items-center">
-            <i class="fa-solid fa-crown mr-1"></i> PRO ATTACHMENTS (FREE EARLY ACCESS)
+            <i class="fa-solid fa-crown mr-1"></i> OPTIONAL MEDIA & GEAR
           </div>
           
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-[10px] text-slate-400 mb-1">Camera / Lens Gear</label>
+              <label class="block text-[10px] text-slate-400 mb-1">Camera / Lens</label>
               <input id="form-camera" type="text" placeholder="e.g. Sony A7 IV + 200-600mm" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white focus:border-amber-500 outline-none">
             </div>
             <div>
-              <label class="block text-[10px] text-slate-400 mb-1">Video Link (YouTube/TikTok)</label>
-              <input id="form-video" type="url" placeholder="https://..." class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white focus:border-amber-500 outline-none">
+              <label class="block text-[10px] text-slate-400 mb-1">Video Link</label>
+              <input id="form-video" type="url" placeholder="https://youtube.com/..." class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white focus:border-amber-500 outline-none">
             </div>
           </div>
 
           <div>
             <label class="block text-[10px] text-slate-400 mb-1">Aircraft Photo URL (Direct Link)</label>
-            <input id="form-photo" type="url" placeholder="https://images.unsplash.com/..." class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white focus:border-amber-500 outline-none">
+            <input id="form-photo" type="url" placeholder="https://..." class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white focus:border-amber-500 outline-none">
           </div>
         </div>
 
         <div>
-          <label class="block text-[11px] font-semibold uppercase text-slate-400 mb-1">Special Notes / Livery</label>
-          <input id="form-notes" type="text" placeholder="e.g. Oneworld livery, inaugural flight" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-amber-500 outline-none">
+          <label class="block text-[11px] font-semibold uppercase text-slate-400 mb-1">Special Notes</label>
+          <input id="form-notes" type="text" placeholder="e.g. Special livery, inaugural flight" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-amber-500 outline-none">
         </div>
 
-        <button type="submit" id="save-btn" class="w-full mt-4 bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold py-2.5 rounded-xl transition text-xs shadow-lg shadow-amber-500/20 flex items-center justify-center">
+        <button type="submit" id="save-btn" class="w-full mt-4 bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold py-2.5 rounded-xl transition text-xs shadow-lg shadow-amber-500/20 cursor-pointer">
           Save Sighting to Cloud Logbook
         </button>
       </form>
@@ -280,7 +270,7 @@
         <h3 class="text-base font-bold text-white flex items-center">
           <i class="fa-solid fa-crown text-amber-400 mr-2"></i> Spotter Account
         </h3>
-        <button onclick="closeAuthModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+        <button onclick="closeAuthModal()" class="text-slate-400 hover:text-white cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
       </div>
 
       <form id="view-signin" onsubmit="handleSignIn(event)" class="space-y-3">
@@ -292,7 +282,7 @@
           <label class="block text-[11px] font-semibold uppercase text-slate-400 mb-1">Password</label>
           <input id="signin-password" type="password" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-amber-500">
         </div>
-        <button type="submit" class="w-full bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold py-2 rounded-xl text-xs transition">
+        <button type="submit" class="w-full bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold py-2 rounded-xl text-xs transition cursor-pointer">
           Sign In
         </button>
         <p class="text-center text-xs text-slate-400 mt-2">
@@ -313,7 +303,7 @@
           <label class="block text-[11px] font-semibold uppercase text-slate-400 mb-1">Password *</label>
           <input id="reg-password" type="password" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-amber-500">
         </div>
-        <button type="submit" class="w-full bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold py-2 rounded-xl text-xs transition">
+        <button type="submit" class="w-full bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold py-2 rounded-xl text-xs transition cursor-pointer">
           Create Account & Claim Free Pro
         </button>
         <p class="text-center text-xs text-slate-400 mt-2">
@@ -326,10 +316,10 @@
           <span class="text-[11px] text-slate-400 uppercase tracking-wider block">Logged in as:</span>
           <p id="profile-name" class="text-base font-bold text-white"></p>
           <p class="text-xs text-amber-400 font-bold flex items-center">
-            <i class="fa-solid fa-crown mr-1 text-xs"></i> FOUNDING PRO SPOTTER (PERMANENT FREE ACCESS)
+            <i class="fa-solid fa-crown mr-1 text-xs"></i> FOUNDING PRO SPOTTER
           </p>
         </div>
-        <button onclick="handleLogout()" class="w-full bg-rose-500/20 hover:bg-rose-500 text-rose-300 hover:text-white border border-rose-500/30 py-2 rounded-xl text-xs font-bold transition">
+        <button onclick="handleLogout()" class="w-full bg-rose-500/20 hover:bg-rose-500 text-rose-300 hover:text-white border border-rose-500/30 py-2 rounded-xl text-xs font-bold transition cursor-pointer">
           Log Out
         </button>
       </div>
@@ -342,24 +332,19 @@
   </footer>
 
   <script>
-    // --- 1. SUPABASE CLIENT INITIALIZATION ---
+    // --- 1. SUPABASE CLIENT ---
     const SUPABASE_URL = "https://swisvwetuljwdoggckfp.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3aXN2d2V0dWxqd2RvZ2dja2ZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI3ODIwMDYsImV4cCI6MjEwODM1ODAwNn0.nUP3shPkj9qpAomEHKKGzT-po4WAasQmaWf5NP_F6Rc";
 
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
-    // Local Storage State
     let users = JSON.parse(localStorage.getItem('aerolog_users') || '[]');
     let currentUser = JSON.parse(localStorage.getItem('aerolog_current_user') || 'null');
     let allLogs = JSON.parse(localStorage.getItem('aerolog_community_logs') || '[]');
 
-    if (currentUser && !currentUser.isPro) {
-      currentUser.isPro = true;
-      localStorage.setItem('aerolog_current_user', JSON.stringify(currentUser));
-    }
-
     // --- 2. SUPABASE CLOUD SYNC ---
     async function syncFromCloud() {
+      if (!supabase) return;
       try {
         const { data, error } = await supabase
           .from('spotter_logs')
@@ -367,7 +352,6 @@
           .order('created_at', { ascending: false });
 
         if (!error && data) {
-          // Merge cloud logs with any local private entries
           const privateLogs = allLogs.filter(l => l.visibility === 'private');
           allLogs = [...data, ...privateLogs];
           localStorage.setItem('aerolog_community_logs', JSON.stringify(allLogs));
@@ -377,12 +361,12 @@
           updateStats();
         }
       } catch (err) {
-        console.warn('Using local cache, offline mode active:', err);
+        console.warn('Sync notice:', err);
       }
     }
 
-    // Setup Realtime Subscription so new sightings pop up live
     function setupRealtime() {
+      if (!supabase) return;
       supabase
         .channel('public:spotter_logs')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'spotter_logs' }, payload => {
@@ -402,7 +386,331 @@
         .subscribe();
     }
 
-    // --- 3. AUTHENTICATION ---
+    // --- 3. NAVIGATION TABS ---
+    function switchTab(tab) {
+      ['my-logs', 'community', 'analytics'].forEach(t => {
+        const el = document.getElementById(`tab-${t}`);
+        if (el) el.classList.add('hidden');
+        const btn = document.getElementById(`nav-${t}`);
+        if (btn) {
+          btn.classList.remove('bg-sky-500/15', 'text-sky-400', 'border-sky-500/30', 'bg-amber-500/15', 'text-amber-300');
+          btn.classList.add('text-slate-300');
+        }
+      });
+
+      const activeTabEl = document.getElementById(`tab-${tab}`);
+      if (activeTabEl) activeTabEl.classList.remove('hidden');
+
+      const activeBtn = document.getElementById(`nav-${tab}`);
+      if (activeBtn) {
+        activeBtn.classList.remove('text-slate-300');
+        activeBtn.classList.add('bg-sky-500/15', 'text-sky-400', 'border-sky-500/30');
+      }
+
+      if (tab === 'my-logs') renderTable();
+      if (tab === 'community') renderCommunityFeed();
+      if (tab === 'analytics') renderAnalytics();
+    }
+
+    // --- 4. DATA RENDERING ---
+    function getMyLogs() {
+      if (!currentUser) return allLogs.filter(l => l.user_id === 'guest' || l.userId === 'guest');
+      return allLogs.filter(l => (l.user_id === currentUser.id || l.userId === currentUser.id));
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('logbook-table-body');
+      const emptyState = document.getElementById('empty-state');
+      if (!tbody || !emptyState) return;
+
+      const search = (document.getElementById('search-input')?.value || '').toLowerCase();
+      const myLogs = getMyLogs();
+
+      const filtered = myLogs.filter(e => 
+        (e.reg || '').toLowerCase().includes(search) ||
+        (e.type || '').toLowerCase().includes(search) ||
+        (e.airline || '').toLowerCase().includes(search) ||
+        (e.airport || '').toLowerCase().includes(search)
+      );
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      tbody.innerHTML = filtered.map(e => `
+        <tr class="hover:bg-slate-900/60 transition">
+          <td class="py-3 px-4">
+            ${e.visibility === 'public' ? 
+              '<span class="text-emerald-400 font-medium text-[11px]"><i class="fa-solid fa-globe mr-1"></i> Public</span>' : 
+              '<span class="text-amber-400 font-medium text-[11px]"><i class="fa-solid fa-lock mr-1"></i> Private</span>'}
+          </td>
+          <td class="py-3 px-4 font-mono font-bold text-amber-400">${e.reg}</td>
+          <td class="py-3 px-4 font-medium text-white">${e.type}</td>
+          <td class="py-3 px-4 text-slate-300">${e.airline}</td>
+          <td class="py-3 px-4 uppercase text-slate-400 font-mono">${e.airport}</td>
+          <td class="py-3 px-4 text-slate-400">${e.date}</td>
+          <td class="py-3 px-4">
+            <div class="flex items-center space-x-2">
+              ${e.photo ? `<a href="${e.photo}" target="_blank" class="text-amber-400 hover:text-amber-300"><i class="fa-solid fa-image"></i></a>` : ''}
+              ${e.video ? `<a href="${e.video}" target="_blank" class="text-sky-400 hover:text-sky-300"><i class="fa-solid fa-circle-play"></i></a>` : ''}
+              ${!e.photo && !e.video ? '<span class="text-slate-600">—</span>' : ''}
+            </div>
+          </td>
+          <td class="py-3 px-4 text-slate-400 truncate max-w-xs">${e.notes || '—'}</td>
+          <td class="py-3 px-4 text-right">
+            <button onclick="deleteEntry('${e.id}')" class="text-slate-600 hover:text-rose-400 transition cursor-pointer">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function renderCommunityFeed() {
+      const grid = document.getElementById('community-feed-grid');
+      const emptyState = document.getElementById('community-empty');
+      if (!grid || !emptyState) return;
+
+      const search = (document.getElementById('community-search')?.value || '').toLowerCase();
+      const publicLogs = allLogs.filter(e => e.visibility === 'public');
+
+      const filtered = publicLogs.filter(e => 
+        (e.reg || '').toLowerCase().includes(search) ||
+        (e.type || '').toLowerCase().includes(search) ||
+        (e.airline || '').toLowerCase().includes(search) ||
+        (e.airport || '').toLowerCase().includes(search) ||
+        ((e.spotter_name || e.spotterName || '').toLowerCase().includes(search))
+      );
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      grid.innerHTML = filtered.map(e => `
+        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between hover:border-amber-500/40 transition pro-glow">
+          <div class="space-y-3">
+            <div class="flex justify-between items-center text-xs">
+              <div class="flex items-center space-x-2">
+                <span class="font-mono font-bold text-amber-300 text-sm bg-amber-950/60 px-2.5 py-0.5 rounded border border-amber-800/60">${e.reg}</span>
+                <span class="text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/40 px-1.5 py-0.5 rounded font-bold"><i class="fa-solid fa-crown mr-1"></i>PRO</span>
+              </div>
+              <span class="text-slate-400 font-medium"><i class="fa-solid fa-location-dot mr-1 text-sky-400"></i>${e.airport}</span>
+            </div>
+
+            ${e.photo ? `
+              <div class="aspect-video w-full rounded-xl overflow-hidden bg-black border border-slate-800 relative">
+                <img src="${e.photo}" alt="${e.type}" class="w-full h-full object-cover" loading="lazy">
+              </div>` : ''}
+
+            <div>
+              <h4 class="text-sm font-bold text-white">${e.type}</h4>
+              <p class="text-xs text-slate-300">${e.airline}</p>
+            </div>
+
+            ${e.camera ? `<div class="text-[11px] text-slate-400"><i class="fa-solid fa-camera mr-1 text-slate-500"></i>Gear: ${e.camera}</div>` : ''}
+
+            ${e.video ? `
+              <div>
+                <a href="${e.video}" target="_blank" class="inline-flex items-center text-xs text-sky-400 hover:text-sky-300 font-semibold bg-sky-500/10 px-2.5 py-1 rounded-lg border border-sky-500/20 transition">
+                  <i class="fa-solid fa-circle-play mr-1.5 text-rose-500"></i> Watch Sighting Video
+                </a>
+              </div>` : ''}
+
+            ${e.notes ? `<p class="text-xs text-slate-400 italic bg-slate-900/90 p-2 rounded-lg border border-slate-800">${e.notes}</p>` : ''}
+          </div>
+
+          <div class="pt-3 mt-3 border-t border-slate-800/60 flex justify-between items-center text-[11px] text-slate-500">
+            <span>Spotted by <strong class="text-amber-300 font-semibold">${e.spotter_name || e.spotterName || 'Spotter'}</strong></span>
+            <span>${e.date}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderAnalytics() {
+      const myLogs = getMyLogs();
+      const mfgEl = document.getElementById('analytics-mfg');
+      if (!mfgEl) return;
+
+      let airbus = 0, boeing = 0, other = 0;
+      myLogs.forEach(e => {
+        const t = (e.type || '').toLowerCase();
+        if (t.includes('airbus') || t.startsWith('a3') || t.startsWith('a2')) airbus++;
+        else if (t.includes('boeing') || t.startsWith('b7') || t.startsWith('7')) boeing++;
+        else other++;
+      });
+      const total = myLogs.length || 1;
+
+      mfgEl.innerHTML = `
+        <div>
+          <div class="flex justify-between text-[11px] mb-1"><span>Airbus</span><span class="text-sky-400 font-bold">${Math.round((airbus/total)*100)}%</span></div>
+          <div class="w-full bg-slate-950 h-2 rounded-full overflow-hidden"><div class="bg-sky-500 h-full" style="width: ${(airbus/total)*100}%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between text-[11px] mb-1"><span>Boeing</span><span class="text-amber-400 font-bold">${Math.round((boeing/total)*100)}%</span></div>
+          <div class="w-full bg-slate-950 h-2 rounded-full overflow-hidden"><div class="bg-amber-500 h-full" style="width: ${(boeing/total)*100}%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between text-[11px] mb-1"><span>Other / Regional</span><span class="text-emerald-400 font-bold">${Math.round((other/total)*100)}%</span></div>
+          <div class="w-full bg-slate-950 h-2 rounded-full overflow-hidden"><div class="bg-emerald-500 h-full" style="width: ${(other/total)*100}%"></div></div>
+        </div>
+      `;
+
+      const aptCounts = {};
+      myLogs.forEach(e => { if (e.airport) aptCounts[e.airport] = (aptCounts[e.airport] || 0) + 1; });
+      const topApts = Object.entries(aptCounts).sort((a,b) => b[1] - a[1]).slice(0, 4);
+
+      document.getElementById('analytics-airports').innerHTML = topApts.length ? topApts.map(([apt, count]) => `
+        <div class="flex justify-between items-center bg-slate-950 p-2 rounded-lg border border-slate-800">
+          <span class="font-mono text-white font-bold">${apt}</span>
+          <span class="text-xs text-amber-400 font-semibold">${count} sightings</span>
+        </div>
+      `).join('') : '<p class="text-slate-600">No airport data logged yet.</p>';
+
+      const gearCounts = {};
+      myLogs.filter(e => e.camera).forEach(e => { gearCounts[e.camera] = (gearCounts[e.camera] || 0) + 1; });
+      const topGear = Object.entries(gearCounts).sort((a,b) => b[1] - a[1]).slice(0, 3);
+
+      document.getElementById('analytics-gear').innerHTML = topGear.length ? topGear.map(([gear, count]) => `
+        <div class="flex justify-between items-center bg-slate-950 p-2 rounded-lg border border-slate-800">
+          <span class="text-slate-300 truncate max-w-[150px]">${gear}</span>
+          <span class="text-xs text-emerald-400 font-semibold">${count} uses</span>
+        </div>
+      `).join('') : '<p class="text-slate-600">No gear logged yet.</p>';
+    }
+
+    function updateStats() {
+      const myLogs = getMyLogs();
+      document.getElementById('stat-total').textContent = myLogs.length;
+
+      const uniqueRegs = new Set(myLogs.map(e => (e.reg || '').toUpperCase()));
+      document.getElementById('stat-unique').textContent = uniqueRegs.size;
+
+      const publicLogs = allLogs.filter(e => e.visibility === 'public');
+      document.getElementById('stat-community').textContent = publicLogs.length;
+
+      const air = document.getElementById('stat-airline');
+      if (myLogs.length === 0) {
+        air.textContent = 'None';
+        return;
+      }
+
+      const counts = {};
+      myLogs.forEach(e => { if (e.airline) counts[e.airline] = (counts[e.airline] || 0) + 1; });
+      const keys = Object.keys(counts);
+      if (keys.length > 0) {
+        air.textContent = keys.reduce((a, b) => counts[a] > counts[b] ? a : b);
+      }
+    }
+
+    // --- 5. LOG CREATION (ANYONE CAN LOG) ---
+    function openLogModal() {
+      const d = document.getElementById('form-date');
+      if (d) d.value = new Date().toISOString().split('T')[0];
+      const m = document.getElementById('log-modal');
+      if (m) m.classList.remove('hidden');
+    }
+
+    function closeLogModal() {
+      const m = document.getElementById('log-modal');
+      if (m) m.classList.add('hidden');
+      const f = document.getElementById('entry-form');
+      if (f) f.reset();
+    }
+
+    async function handleSaveEntry(e) {
+      e.preventDefault();
+      const saveBtn = document.getElementById('save-btn');
+      if (saveBtn) {
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Saving...';
+      }
+
+      const newEntry = {
+        id: 'log_' + Date.now().toString() + '_' + Math.random().toString(36).substring(7),
+        user_id: currentUser ? currentUser.id : 'guest',
+        spotter_name: currentUser ? currentUser.username : 'Guest Spotter',
+        reg: document.getElementById('form-reg').value.trim().toUpperCase(),
+        type: document.getElementById('form-type').value.trim(),
+        airline: document.getElementById('form-airline').value.trim(),
+        airport: document.getElementById('form-airport').value.trim().toUpperCase(),
+        date: document.getElementById('form-date').value,
+        camera: document.getElementById('form-camera').value.trim(),
+        video: document.getElementById('form-video').value.trim(),
+        photo: document.getElementById('form-photo').value.trim(),
+        visibility: document.getElementById('form-privacy').value,
+        notes: document.getElementById('form-notes').value.trim(),
+        is_pro: true
+      };
+
+      // Send to Supabase cloud if public
+      if (newEntry.visibility === 'public' && supabase) {
+        try {
+          const { error } = await supabase.from('spotter_logs').insert([newEntry]);
+          if (error) console.error("Cloud insert error:", error);
+        } catch (err) {
+          console.warn('Cloud sync error, stored locally:', err);
+        }
+      }
+
+      // Always save locally so you can see it instantly
+      allLogs.unshift(newEntry);
+      localStorage.setItem('aerolog_community_logs', JSON.stringify(allLogs));
+
+      if (saveBtn) {
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Save Sighting to Cloud Logbook';
+      }
+      closeLogModal();
+      renderTable();
+      renderCommunityFeed();
+      renderAnalytics();
+      updateStats();
+    }
+
+    async function deleteEntry(id) {
+      if (!confirm('Remove this sighting from your logbook?')) return;
+      if (supabase) {
+        try {
+          await supabase.from('spotter_logs').delete().eq('id', id);
+        } catch (err) {
+          console.warn('Cloud delete notice:', err);
+        }
+      }
+      allLogs = allLogs.filter(e => e.id !== id);
+      localStorage.setItem('aerolog_community_logs', JSON.stringify(allLogs));
+      renderTable();
+      renderCommunityFeed();
+      renderAnalytics();
+      updateStats();
+    }
+
+    function exportCSV() {
+      const myLogs = getMyLogs();
+      if (myLogs.length === 0) {
+        alert('No entries to export yet!');
+        return;
+      }
+      let csv = 'Registration,Aircraft Type,Airline,Airport,Date,Camera,Photo,Video,Notes\n';
+      myLogs.forEach(e => {
+        csv += `"${e.reg}","${e.type}","${e.airline}","${e.airport}","${e.date}","${(e.camera || '').replace(/"/g, '""')}","${e.photo || ''}","${e.video || ''}","${(e.notes || '').replace(/"/g, '""')}"\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.setAttribute('href', url);
+      a.setAttribute('download', `aerolog_export_${new Date().toISOString().split('T')[0]}.csv`);
+      a.click();
+    }
+
+    // --- 6. AUTHENTICATION (OPTIONAL) ---
     function openAuthModal() {
       if (currentUser) {
         document.getElementById('view-signin').classList.add('hidden');
@@ -442,7 +750,7 @@
         return;
       }
 
-      const newUser = { id: Date.now().toString(), username, email, password, defaultPrivacy: 'public', isPro: true };
+      const newUser = { id: 'usr_' + Date.now().toString(), username, email, password, defaultPrivacy: 'public', isPro: true };
       users.push(newUser);
       localStorage.setItem('aerolog_users', JSON.stringify(users));
 
@@ -450,7 +758,6 @@
       localStorage.setItem('aerolog_current_user', JSON.stringify(currentUser));
       updateAuthUI();
       closeAuthModal();
-      alert(`Welcome, Founder Spotter ${currentUser.username}! Pro features unlocked free.`);
       renderTable();
     }
 
@@ -490,318 +797,6 @@
       }
     }
 
-    // --- 4. NAVIGATION ---
-    function switchTab(tab) {
-      ['my-logs', 'community', 'analytics'].forEach(t => {
-        document.getElementById(`tab-${t}`).classList.add('hidden');
-        const btn = document.getElementById(`nav-${t}`);
-        if (btn) {
-          btn.classList.remove('bg-sky-500/15', 'text-sky-400', 'border-sky-500/30', 'bg-amber-500/15', 'text-amber-300');
-          btn.classList.add('text-slate-300');
-        }
-      });
-
-      document.getElementById(`tab-${tab}`).classList.remove('hidden');
-      const activeBtn = document.getElementById(`nav-${tab}`);
-      if (activeBtn) {
-        activeBtn.classList.remove('text-slate-300');
-        activeBtn.classList.add('bg-sky-500/15', 'text-sky-400', 'border-sky-500/30');
-      }
-
-      if (tab === 'my-logs') renderTable();
-      if (tab === 'community') renderCommunityFeed();
-      if (tab === 'analytics') renderAnalytics();
-    }
-
-    // --- 5. LOGBOOK & COMMUNITY RENDERING ---
-    function getMyLogs() {
-      if (!currentUser) return allLogs.filter(l => l.user_id === 'anonymous' || l.userId === 'anonymous');
-      return allLogs.filter(l => (l.user_id === currentUser.id || l.userId === currentUser.id));
-    }
-
-    function renderTable() {
-      const tbody = document.getElementById('logbook-table-body');
-      const emptyState = document.getElementById('empty-state');
-      const search = document.getElementById('search-input').value.toLowerCase();
-      const myLogs = getMyLogs();
-
-      const filtered = myLogs.filter(e => 
-        e.reg.toLowerCase().includes(search) ||
-        e.type.toLowerCase().includes(search) ||
-        e.airline.toLowerCase().includes(search) ||
-        e.airport.toLowerCase().includes(search) ||
-        (e.camera && e.camera.toLowerCase().includes(search)) ||
-        (e.notes && e.notes.toLowerCase().includes(search))
-      );
-
-      if (filtered.length === 0) {
-        tbody.innerHTML = '';
-        emptyState.classList.remove('hidden');
-        return;
-      }
-
-      emptyState.classList.add('hidden');
-      tbody.innerHTML = filtered.map(e => `
-        <tr class="hover:bg-slate-900/60 transition">
-          <td class="py-3 px-4">
-            ${e.visibility === 'public' ? 
-              '<span class="text-emerald-400 font-medium text-[11px]"><i class="fa-solid fa-globe mr-1"></i> Public</span>' : 
-              '<span class="text-amber-400 font-medium text-[11px]"><i class="fa-solid fa-lock mr-1"></i> Private</span>'}
-          </td>
-          <td class="py-3 px-4 font-mono font-bold text-amber-400">${e.reg}</td>
-          <td class="py-3 px-4 font-medium text-white">${e.type}</td>
-          <td class="py-3 px-4 text-slate-300">${e.airline}</td>
-          <td class="py-3 px-4 uppercase text-slate-400 font-mono">${e.airport}</td>
-          <td class="py-3 px-4 text-slate-400">${e.date}</td>
-          <td class="py-3 px-4">
-            <div class="flex items-center space-x-2">
-              ${e.photo ? `<a href="${e.photo}" target="_blank" class="text-amber-400 hover:text-amber-300" title="View Aircraft Photo"><i class="fa-solid fa-image"></i></a>` : ''}
-              ${e.video ? `<a href="${e.video}" target="_blank" class="text-sky-400 hover:text-sky-300" title="Watch Video"><i class="fa-solid fa-circle-play"></i></a>` : ''}
-              ${!e.photo && !e.video ? '<span class="text-slate-600">—</span>' : ''}
-            </div>
-          </td>
-          <td class="py-3 px-4 text-slate-400 truncate max-w-xs">
-            ${e.camera ? `<span class="text-slate-300 mr-1"><i class="fa-solid fa-camera text-[10px] text-slate-500 mr-1"></i>${e.camera}</span> • ` : ''}
-            <span class="italic text-slate-500">${e.notes || 'No notes'}</span>
-          </td>
-          <td class="py-3 px-4 text-right">
-            <button onclick="deleteEntry('${e.id}')" class="text-slate-600 hover:text-rose-400 transition text-xs">
-              <i class="fa-solid fa-trash-can"></i>
-            </button>
-          </td>
-        </tr>
-      `).join('');
-    }
-
-    function renderCommunityFeed() {
-      const grid = document.getElementById('community-feed-grid');
-      const emptyState = document.getElementById('community-empty');
-      const search = document.getElementById('community-search').value.toLowerCase();
-
-      const publicLogs = allLogs.filter(e => e.visibility === 'public');
-
-      const filtered = publicLogs.filter(e => 
-        e.reg.toLowerCase().includes(search) ||
-        e.type.toLowerCase().includes(search) ||
-        e.airline.toLowerCase().includes(search) ||
-        e.airport.toLowerCase().includes(search) ||
-        ((e.spotter_name || e.spotterName || '').toLowerCase().includes(search))
-      );
-
-      if (filtered.length === 0) {
-        grid.innerHTML = '';
-        emptyState.classList.remove('hidden');
-        return;
-      }
-
-      emptyState.classList.add('hidden');
-      grid.innerHTML = filtered.map(e => `
-        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between hover:border-amber-500/40 transition pro-glow">
-          <div class="space-y-3">
-            <div class="flex justify-between items-center text-xs">
-              <div class="flex items-center space-x-2">
-                <span class="font-mono font-bold text-amber-300 text-sm bg-amber-950/60 px-2.5 py-0.5 rounded border border-amber-800/60">${e.reg}</span>
-                <span class="text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/40 px-1.5 py-0.5 rounded font-bold"><i class="fa-solid fa-crown mr-1"></i>PRO</span>
-              </div>
-              <span class="text-slate-400 font-medium"><i class="fa-solid fa-location-dot mr-1 text-sky-400"></i>${e.airport}</span>
-            </div>
-
-            ${e.photo ? `
-              <div class="aspect-video w-full rounded-xl overflow-hidden bg-black border border-slate-800 relative group">
-                <img src="${e.photo}" alt="${e.type}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" loading="lazy">
-              </div>` : ''}
-
-            <div>
-              <h4 class="text-sm font-bold text-white">${e.type}</h4>
-              <p class="text-xs text-slate-300">${e.airline}</p>
-            </div>
-
-            ${e.camera ? `<div class="text-[11px] text-slate-400"><i class="fa-solid fa-camera mr-1 text-slate-500"></i>Gear: ${e.camera}</div>` : ''}
-
-            ${e.video ? `
-              <div>
-                <a href="${e.video}" target="_blank" class="inline-flex items-center text-xs text-sky-400 hover:text-sky-300 font-semibold bg-sky-500/10 px-2.5 py-1 rounded-lg border border-sky-500/20 transition">
-                  <i class="fa-solid fa-circle-play mr-1.5 text-rose-500"></i> Watch Sighting Video
-                </a>
-              </div>` : ''}
-
-            ${e.notes ? `<p class="text-xs text-slate-400 italic bg-slate-900/90 p-2 rounded-lg border border-slate-800">${e.notes}</p>` : ''}
-          </div>
-
-          <div class="pt-3 mt-3 border-t border-slate-800/60 flex justify-between items-center text-[11px] text-slate-500">
-            <span>Spotted by <strong class="text-amber-300 font-semibold">${e.spotter_name || e.spotterName}</strong></span>
-            <span>${e.date}</span>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function renderAnalytics() {
-      const myLogs = getMyLogs();
-
-      let airbus = 0, boeing = 0, other = 0;
-      myLogs.forEach(e => {
-        const t = e.type.toLowerCase();
-        if (t.includes('airbus') || t.startsWith('a3') || t.startsWith('a2')) airbus++;
-        else if (t.includes('boeing') || t.startsWith('b7') || t.startsWith('7')) boeing++;
-        else other++;
-      });
-      const total = myLogs.length || 1;
-
-      document.getElementById('analytics-mfg').innerHTML = `
-        <div>
-          <div class="flex justify-between text-[11px] mb-1"><span>Airbus</span><span class="text-sky-400 font-bold">${Math.round((airbus/total)*100)}% (${airbus})</span></div>
-          <div class="w-full bg-slate-950 h-2 rounded-full overflow-hidden"><div class="bg-sky-500 h-full" style="width: ${(airbus/total)*100}%"></div></div>
-        </div>
-        <div>
-          <div class="flex justify-between text-[11px] mb-1"><span>Boeing</span><span class="text-amber-400 font-bold">${Math.round((boeing/total)*100)}% (${boeing})</span></div>
-          <div class="w-full bg-slate-950 h-2 rounded-full overflow-hidden"><div class="bg-amber-500 h-full" style="width: ${(boeing/total)*100}%"></div></div>
-        </div>
-        <div>
-          <div class="flex justify-between text-[11px] mb-1"><span>Other / Regional</span><span class="text-emerald-400 font-bold">${Math.round((other/total)*100)}% (${other})</span></div>
-          <div class="w-full bg-slate-950 h-2 rounded-full overflow-hidden"><div class="bg-emerald-500 h-full" style="width: ${(other/total)*100}%"></div></div>
-        </div>
-      `;
-
-      const aptCounts = {};
-      myLogs.forEach(e => { aptCounts[e.airport] = (aptCounts[e.airport] || 0) + 1; });
-      const topApts = Object.entries(aptCounts).sort((a,b) => b[1] - a[1]).slice(0, 4);
-
-      document.getElementById('analytics-airports').innerHTML = topApts.length ? topApts.map(([apt, count]) => `
-        <div class="flex justify-between items-center bg-slate-950 p-2 rounded-lg border border-slate-800">
-          <span class="font-mono text-white font-bold">${apt}</span>
-          <span class="text-xs text-amber-400 font-semibold">${count} sightings</span>
-        </div>
-      `).join('') : '<p class="text-slate-600">No data logged yet.</p>';
-
-      const gearCounts = {};
-      myLogs.filter(e => e.camera).forEach(e => { gearCounts[e.camera] = (gearCounts[e.camera] || 0) + 1; });
-      const topGear = Object.entries(gearCounts).sort((a,b) => b[1] - a[1]).slice(0, 3);
-
-      document.getElementById('analytics-gear').innerHTML = topGear.length ? topGear.map(([gear, count]) => `
-        <div class="flex justify-between items-center bg-slate-950 p-2 rounded-lg border border-slate-800">
-          <span class="text-slate-300 truncate max-w-[150px]">${gear}</span>
-          <span class="text-xs text-emerald-400 font-semibold">${count} uses</span>
-        </div>
-      `).join('') : '<p class="text-slate-600">No cameras logged yet.</p>';
-    }
-
-    function updateStats() {
-      const myLogs = getMyLogs();
-      document.getElementById('stat-total').textContent = myLogs.length;
-
-      const uniqueRegs = new Set(myLogs.map(e => e.reg.toUpperCase()));
-      document.getElementById('stat-unique').textContent = uniqueRegs.size;
-
-      const publicLogs = allLogs.filter(e => e.visibility === 'public');
-      document.getElementById('stat-community').textContent = publicLogs.length;
-
-      if (myLogs.length === 0) {
-        document.getElementById('stat-airline').textContent = 'None';
-        return;
-      }
-
-      const counts = {};
-      myLogs.forEach(e => { counts[e.airline] = (counts[e.airline] || 0) + 1; });
-      const topAirline = Object.keys(counts).reduce((a, b) => counts[a] > counts[b] ? a : b);
-      document.getElementById('stat-airline').textContent = topAirline;
-    }
-
-    // --- 6. LOG CREATION & EXPORTS ---
-    function openLogModal() {
-      document.getElementById('form-date').value = new Date().toISOString().split('T')[0];
-      document.getElementById('log-modal').classList.remove('hidden');
-    }
-
-    function closeLogModal() {
-      document.getElementById('log-modal').classList.add('hidden');
-      document.getElementById('entry-form').reset();
-    }
-
-    async function handleSaveEntry(e) {
-      e.preventDefault();
-      const saveBtn = document.getElementById('save-btn');
-      saveBtn.disabled = true;
-      saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Saving to Cloud...';
-
-      const newEntry = {
-        id: Date.now().toString(),
-        user_id: currentUser ? currentUser.id : 'anonymous',
-        spotter_name: currentUser ? currentUser.username : 'Guest Spotter',
-        reg: document.getElementById('form-reg').value.trim().toUpperCase(),
-        type: document.getElementById('form-type').value.trim(),
-        airline: document.getElementById('form-airline').value.trim(),
-        airport: document.getElementById('form-airport').value.trim().toUpperCase(),
-        date: document.getElementById('form-date').value,
-        camera: document.getElementById('form-camera').value.trim(),
-        video: document.getElementById('form-video').value.trim(),
-        photo: document.getElementById('form-photo').value.trim(),
-        visibility: document.getElementById('form-privacy').value,
-        notes: document.getElementById('form-notes').value.trim(),
-        is_pro: true
-      };
-
-      // 1. If public, save directly to Supabase cloud
-      if (newEntry.visibility === 'public') {
-        try {
-          const { error } = await supabase.from('spotter_logs').insert([newEntry]);
-          if (error) throw error;
-        } catch (err) {
-          console.warn('Cloud write failed, falling back to local storage:', err);
-        }
-      }
-
-      // 2. Always store locally in case of offline access
-      allLogs.unshift(newEntry);
-      localStorage.setItem('aerolog_community_logs', JSON.stringify(allLogs));
-
-      saveBtn.disabled = false;
-      saveBtn.textContent = 'Save Sighting to Cloud Logbook';
-      closeLogModal();
-      renderTable();
-      renderCommunityFeed();
-      renderAnalytics();
-      updateStats();
-    }
-
-    async function deleteEntry(id) {
-      if (!confirm('Remove this sighting from your logbook?')) return;
-      try {
-        await supabase.from('spotter_logs').delete().eq('id', id);
-      } catch (err) {
-        console.warn('Could not delete from cloud:', err);
-      }
-      allLogs = allLogs.filter(e => e.id !== id);
-      localStorage.setItem('aerolog_community_logs', JSON.stringify(allLogs));
-      renderTable();
-      renderCommunityFeed();
-      renderAnalytics();
-      updateStats();
-    }
-
-    function exportCSV() {
-      const myLogs = getMyLogs();
-      if (myLogs.length === 0) {
-        alert('No entries to export yet!');
-        return;
-      }
-      let csv = 'Registration,Aircraft Type,Airline,Airport,Date,Camera,Photo,Video,Notes\n';
-      myLogs.forEach(e => {
-        csv += `"${e.reg}","${e.type}","${e.airline}","${e.airport}","${e.date}","${(e.camera || '').replace(/"/g, '""')}","${e.photo || ''}","${e.video || ''}","${(e.notes || '').replace(/"/g, '""')}"\n`;
-      });
-
-      const blob = new Blob([csv], { type: 'text/csv' });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.setAttribute('href', url);
-      a.setAttribute('download', `aerolog_pro_export_${new Date().toISOString().split('T')[0]}.csv`);
-      a.click();
-    }
-
-    function printSpottingDossier() {
-      window.print();
-    }
-
     // Initialize
     updateAuthUI();
     renderTable();
@@ -809,7 +804,7 @@
     renderAnalytics();
     updateStats();
 
-    // Start Realtime Cloud Sync
+    // Start Realtime Cloud Connection
     syncFromCloud();
     setupRealtime();
   </script>
