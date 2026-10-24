@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Point System & Scoring Guide • JetSpot Log</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+    
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #0b0f19;
+      color: #f1f5f9;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-amber-500 selection:text-black">
+
+  <!-- TOP BAR -->
+  <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      
+      <!-- Logo -->
+      <a href="https://www.jetspotlog.com" class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-slate-950 shadow-lg shadow-amber-500/20">
+          <i data-lucide="plane" class="w-6 h-6 stroke-[2.2]"></i>
+        </div>
+        <div>
+          <span class="font-extrabold text-lg tracking-tight text-white">JETSPOT<span class="text-amber-400">LOG</span></span>
+          <p class="text-[10px] text-slate-400 font-mono tracking-wider">SCORING & RULES GUIDE</p>
+        </div>
+      </a>
+
+      <!-- Return Button -->
+      <a href="https://www.jetspotlog.com" class="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold flex items-center space-x-2 border border-slate-700 transition-all">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+        <span>Back to Logbook</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- CONTENT VIEWPORT -->
+  <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 py-10">
+
+    <!-- Title Header -->
+    <div class="text-center mb-10">
+      <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-mono mb-3">
+        <i data-lucide="award" class="w-4 h-4"></i>
+        <span>OFFICIAL SPOTTER POINT SYSTEM</span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">How to Earn Points on JetSpot Log</h1>
+      <p class="text-slate-400 text-sm sm:text-base mt-2 max-w-xl mx-auto">
+        Points are awarded for accuracy, media proof, and rare sightings. Verified catches help you climb the official community leaderboard!
+      </p>
+    </div>
+
+    <!-- POINTS GRID -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+
+      <!-- 15 PTS: COMPLETE SIGHTING -->
+      <div class="bg-slate-900/60 border border-slate-800 hover:border-slate-700 rounded-2xl p-5 flex items-start justify-between backdrop-blur-sm transition-all">
+        <div class="pr-3">
+          <h3 class="text-base font-bold text-white flex items-center space-x-2">
+            <span>Complete Log Entry</span>
+          </h3>
+          <p class="text-xs text-slate-400 mt-1">All sections filled out, including a working photo or video link.</p>
+        </div>
+        <span class="text-lg font-mono font-black text-amber-400 px-3 py-1 rounded-lg bg-amber-500/10 border border-amber-500/20 whitespace-nowrap">
+          +15 PTS
+        </span>
+      </div>
+
+      <!-- 25 PTS: SPECIAL LIVERY -->
+      <div class="bg-slate-900/60 border border-slate-800 hover:border-slate-700 rounded-2xl p-5 flex items-start justify-between backdrop-blur-sm transition-all">
+        <div class="pr-3">
+          <h3 class="text-base font-bold text-white flex items-center space-x-2">
+            <span>Special Livery</span>
+          </h3>
+          <p class="text-xs text-slate-400 mt-1">Retro liveries, alliance schemes (Star Alliance, Oneworld, SkyTeam), or promotional wraps.</p>
+        </div>
+        <span class="text-lg font-mono font-black text-amber-400 px-3 py-1 rounded-lg bg-amber-500/10 border border-amber-500/20 whitespace-nowrap">
+          +25 PTS
+        </span>
+      </div>
+
+      <!-- 30 PTS: AIRCRAFT LAST EVER FLIGHT -->
+      <div class="bg-slate-900/60 border border-slate-800 hover:border-slate-700 rounded-2xl p-5 flex items-start justify-between backdrop-blur-sm transition-all">
+        <div class="pr-3">
+          <h3 class="text-base font-bold text-white flex items-center space-x-2">
+            <span>Aircraft Last Ever Flight</span>
+          </h3>
+          <p class="text-xs text-slate-400 mt-1">Catching a specific individual aircraft on its final flight before permanent retirement or retirement storage.</p>
+        </div>
+        <span class="text-lg font-mono font-black text-amber-400 px-3 py-1 rounded-lg bg-amber-500/10 border border-amber-500/20 whitespace-nowrap">
+          +30 PTS
+        </span>
+      </div>
+
+      <!-- 35 PTS: LESS THAN 10 AIRCRAFT -->
+      <div class="bg-slate-900/60 border border-slate-800 hover:border-slate-700 rounded-2xl p-5 flex items-start justify-between backdrop-blur-sm transition-all">
+        <div class="pr-3">
+          <h3 class="text-base font-bold text-white flex items-center space-x-2">
+            <span>Fleet Rarity: &lt; 10 Aircraft</span>
+          </h3>
+          <p class="text-xs text-slate-400 mt-1">Spotting an aircraft type with fewer than 10 total active airframes flying worldwide.</p>
+        </div>
+        <span class="text-lg font-mono font-black text-amber-400 px-3 py-1 rounded-lg bg-amber-500/10 border border-amber-500/20 whitespace-nowrap">
+          +35 PTS
+        </span>
+      </div>
+
+      <!-- 40 PTS: 1 IN 1 SPECIAL LIVERY -->
+      <div class="bg-slate-900/60 border border-slate-800 hover:border-slate-700 rounded-2xl p-5 flex items-start justify-between backdrop-blur-sm transition-all">
+        <div class="pr-3">
+          <h3 class="text-base font-bold text-white flex items-center space-x-2">
+            <span>1-of-1 Special Livery</span>
+          </h3>
+          <p class="text-xs text-slate-400 mt-1">A one-off custom paint scheme where only a single airframe in the world carries it.</p>
+        </div>
+        <span class="text-lg font-mono font-black text-amber-400 px-3 py-1 rounded-lg bg-amber-500/10 border border-amber-500/20 whitespace-nowrap">
+          +40 PTS
+        </span>
+      </div>
+
+      <!-- 50 PTS: LESS THAN 3 AIRCRAFT -->
+      <div class="bg-slate-900/60 border border-slate-800 hover:border-slate-700 rounded-2xl p-5 flex items-start justify-between backdrop-blur-sm transition-all">
+        <div class="pr-3">
+          <h3 class="text-base font-bold text-white flex items-center space-x-2">
+            <span>Ultra Rare: &lt; 3 Aircraft</span>
+          </h3>
+          <p class="text-xs text-slate-400 mt-1">Catching an aircraft type where fewer than 3 active flying examples remain globally.</p>
+        </div>
+        <span class="text-lg font-mono font-black text-emerald-400 px-3 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 whitespace-nowrap">
+          +50 PTS
+        </span>
+      </div>
+
+      <!-- 50 PTS: LAST EVER FLIGHT FOR AIRLINE -->
+      <div class="bg-slate-900/60 border border-slate-800 hover:border-slate-700 rounded-2xl p-5 flex items-start justify-between backdrop-blur-sm transition-all">
+        <div class="pr-3">
+          <h3 class="text-base font-bold text-white flex items-center space-x-2">
+            <span>Last Ever Flight for Airline</span>
+          </h3>
+          <p class="text-xs text-slate-400 mt-1">An airline's final retirement service for an entire aircraft fleet family (e.g. final 747 or MD-11 farewell flight).</p>
+        </div>
+        <span class="text-lg font-mono font-black text-emerald-400 px-3 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 whitespace-nowrap">
+          +50 PTS
+        </span>
+      </div>
+
+      <!-- 60 PTS: FIRST AIRCRAFT FLIGHT -->
+      <div class="bg-slate-900/60 border border-slate-800 hover:border-slate-700 rounded-2xl p-5 flex items-start justify-between backdrop-blur-sm transition-all">
+        <div class="pr-3">
+          <h3 class="text-base font-bold text-white flex items-center space-x-2">
+            <span>First Aircraft Flight</span>
+          </h3>
+          <p class="text-xs text-slate-400 mt-1">Logging a newly built aircraft on its maiden / first manufacturer test flight.</p>
+        </div>
+        <span class="text-lg font-mono font-black text-emerald-400 px-3 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 whitespace-nowrap">
+          +60 PTS
+        </span>
+      </div>
+
+      <!-- 75 PTS: FIRST AIRLINE FLIGHT (FULL WIDTH) -->
+      <div class="col-span-1 md:col-span-2 bg-gradient-to-r from-amber-500/10 via-amber-400/5 to-transparent border border-amber-500/30 rounded-2xl p-6 flex items-start sm:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="text-amber-400 text-xs font-mono font-bold px-2 py-0.5 rounded bg-amber-500/20 border border-amber-500/30">TOP AWARD</span>
+            <h3 class="text-lg font-extrabold text-white">First Airline Flight (Inaugural / Delivery)</h3>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-300 mt-1">Catching an airline's inaugural revenue flight, brand new route launch, or delivery service.</p>
+        </div>
+        <span class="text-2xl font-mono font-black text-amber-400 px-4 py-2 rounded-xl bg-amber-400/20 border border-amber-400/40 whitespace-nowrap shadow-lg shadow-amber-500/10">
+          +75 PTS
+        </span>
+      </div>
+
+    </div>
+
+    <!-- RULES & VERIFICATION FOOTER -->
+    <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 text-slate-400 text-xs leading-relaxed space-y-2">
+      <h4 class="font-bold text-white flex items-center space-x-1.5 text-sm mb-2">
+        <i data-lucide="shield-check" class="w-4 h-4 text-amber-400"></i>
+        <span>Scoring & Fair Play Rules</span>
+      </h4>
+      <p>• All sightings must be genuinely spotted and recorded by you or your crew.</p>
+      <p>• Points are reviewed and added directly by the <strong>JetSpot Log Admin Team</strong>.</p>
+      <p>• Make sure to include a valid photo or video link so the staff can verify rare liveries and maiden/retirement flights quickly.</p>
+      <div class="pt-3 text-center">
+        <a href="https://www.jetspotlog.com" class="inline-flex items-center space-x-2 text-amber-400 hover:text-amber-300 font-semibold text-xs">
+          <span>Start logging now on JetSpot Log</span>
+          <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+        </a>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
