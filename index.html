@@ -289,7 +289,7 @@
     </div>
   </div>
 
-  <!-- AUTH MODAL (WITH EMAIL, CALLSIGN, AND OWNER PASSCODE ACCESS) -->
+  <!-- AUTH MODAL (CLEAN INPUTS WITH NO EXPOSED DATA) -->
   <div id="auth-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl relative">
       <div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
@@ -305,17 +305,17 @@
       <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="space-y-3.5">
         <div>
           <label class="block text-xs font-mono text-slate-400 mb-1">Spotter Callsign / Username *</label>
-          <input type="text" id="auth-username" required placeholder="e.g. stanlikesplanes" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-amber-500">
+          <input type="text" id="auth-username" required placeholder="e.g. FlightFan99" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-amber-500">
         </div>
 
         <div>
           <label class="block text-xs font-mono text-slate-400 mb-1">Email Address *</label>
-          <input type="email" id="auth-email" required placeholder="e.g. stan@jetspotlog.com" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-amber-500">
+          <input type="email" id="auth-email" required placeholder="e.g. name@example.com" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-amber-500">
         </div>
 
         <div>
-          <label class="block text-xs font-mono text-slate-400 mb-1">Passcode / Password</label>
-          <input type="password" id="auth-password" placeholder="Enter owner9988 for Owner status" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-amber-500">
+          <label class="block text-xs font-mono text-slate-400 mb-1">Password</label>
+          <input type="password" id="auth-password" placeholder="••••••••" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-amber-500">
         </div>
 
         <div class="pt-2">
@@ -332,18 +332,26 @@
     const SUPABASE_KEY = "sb_publishable_uq2gJmm5YWIuGw-dWUGyQA_f7dQcd8-";
     const dbClient = (window.supabase && window.supabase.createClient) ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
-    // 2. OWNER SECURITY CONFIGURATION
-    const OWNER_PASSCODE = "owner9988"; // Enter this passcode in login to unlock Owner privileges
+    // 2. OWNER SECURITY PASSCODE
+    const OWNER_PASSCODE = "owner9988";
 
-    // 3. STATE STORAGE
-    let currentUser = JSON.parse(localStorage.getItem('jetspotlog_user') || 'null');
+    // 3. PERSISTENT STORAGE
+    let currentUser = null;
+    try {
+      currentUser = JSON.parse(localStorage.getItem('jetspotlog_persistent_user') || 'null');
+    } catch (e) {
+      currentUser = null;
+    }
+
     let localLogs = JSON.parse(localStorage.getItem('jetspotlog_logs') || '[]');
     let cloudLogs = [];
 
-    // Initialize application
+    // Initialize application & auto-login check
     window.addEventListener('DOMContentLoaded', () => {
       lucide.createIcons();
-      document.getElementById('modal-date').valueAsDate = new Date();
+      const modalDate = document.getElementById('modal-date');
+      if (modalDate) modalDate.valueAsDate = new Date();
+
       updateAuthUI();
       renderMyLogs();
       fetchCloudLogs();
@@ -369,7 +377,7 @@
       lucide.createIcons();
     }
 
-    // AUTH HANDLING
+    // AUTH HANDLING & PERMANENT AUTO-LOGIN
     function updateAuthUI() {
       const authContainer = document.getElementById('auth-actions');
       const spotterTier = document.getElementById('stat-spotter-tier');
@@ -447,20 +455,21 @@
         isPro: true
       };
 
-      localStorage.setItem('jetspotlog_user', JSON.stringify(currentUser));
+      // Saves session permanently across browser restarts
+      localStorage.setItem('jetspotlog_persistent_user', JSON.stringify(currentUser));
       closeAuthModal();
       updateAuthUI();
       renderMyLogs();
 
       if (isOwner) {
-        alert('👑 Welcome, Owner! Post removal controls are now unlocked across the Community Radar.');
+        alert('👑 Welcome, Owner! Post removal controls are unlocked.');
       }
     }
 
     function handleSignOut() {
       if (confirm('Sign out of your JetSpot Log account?')) {
         currentUser = null;
-        localStorage.removeItem('jetspotlog_user');
+        localStorage.removeItem('jetspotlog_persistent_user');
         updateAuthUI();
         renderMyLogs();
       }
@@ -515,7 +524,8 @@
 
       // Reset and refresh
       document.getElementById('log-sighting-form').reset();
-      document.getElementById('modal-date').valueAsDate = new Date();
+      const modalDate = document.getElementById('modal-date');
+      if (modalDate) modalDate.valueAsDate = new Date();
       closeLogModal();
       renderMyLogs();
       fetchCloudLogs();
@@ -577,7 +587,7 @@
       }
     }
 
-    // CLOUD RADAR FETCH & OWNER POST DELETION
+    // CLOUD RADAR FETCH & OWNER REMOVAL
     async function fetchCloudLogs() {
       if (!dbClient) return;
       try {
